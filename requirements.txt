@@ -1,0 +1,5 @@
+transformers    == 4.29.2
+torch           == 2.0.1
+
+# Client
+gradio          == 3.32.0
