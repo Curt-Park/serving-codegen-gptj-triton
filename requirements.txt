@@ -3,3 +3,4 @@ torch           == 2.0.1
 
 # Client
 gradio          == 3.32.0
+xformers        == 0.0.20

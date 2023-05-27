@@ -18,7 +18,7 @@ model = AutoModelForCausalLM.from_pretrained("moyix/codegen-350M-mono-gptj")
 
 
 def code_generation(
-    gen_prompt, max_tokens, temperature=0.6, seed=42  # noqa: ANN001
+    gen_prompt: str, max_tokens: int, temperature: float = 0.6, seed: int = 42
 ) -> str:
     """Generate code."""
     set_seed(seed)
@@ -29,6 +29,7 @@ def code_generation(
         top_p=0.95,
         temperature=temperature,
         max_new_tokens=max_tokens,
+        pad_token_id=pipe.tokenizer.eos_token_id,
     )[0]["generated_text"]
     return generated_text
 
