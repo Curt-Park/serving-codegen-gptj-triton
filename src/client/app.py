@@ -11,7 +11,7 @@ example = [
     ["def get_file_size(filepath):", 27, 0.6, 42],
     ["def count_lines(filename):", 35, 0.6, 42],
     ["def count_words(filename):", 42, 0.6, 42],
-    ["def two_sum(nums, target):", 42, 0.6, 42],
+    ["def two_sum(nums, target):", 140, 0.6, 55],
 ]
 tokenizer = AutoTokenizer.from_pretrained("Salesforce/codegen-350M-mono")
 model = AutoModelForCausalLM.from_pretrained("moyix/codegen-350M-mono-gptj")
