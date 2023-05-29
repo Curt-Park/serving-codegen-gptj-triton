@@ -1,8 +1,6 @@
 PYTHON=3.9
 BASENAME=serving-codegen-triton
-
 TRITON_CONTAINER_NAME=registry.gitlab.com/curt-park/tritonserver-ft
-FT_BACKEND_VERSION=release/v1.4_tag
 TRITON_VERSION=22.12
 
 env:
@@ -51,17 +49,3 @@ format:
 
 lint:
 	PYTHONPATH=src pytest src --flake8 --pylint --mypy
-
-
-# Docker
-build-triton:
-	git clone https://github.com/triton-inference-server/fastertransformer_backend.git
-	cd fastertransformer_backend && \
-		git fetch origin $(FT_BACKEND_VERSION)  && \
-		git checkout $(FT_BACKEND_VERSION) && \
-		cp docker/Dockerfile . && \
-		docker build -t $(TRITON_CONTAINER_NAME):$(TRITON_VERSION) .
-	rm -rf fastertransformer_backend
-
-push-triton:
-	docker push $(TRITON_CONTAINER_NAME):$(TRITON_VERSION)

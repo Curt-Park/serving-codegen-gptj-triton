@@ -20,8 +20,8 @@ make triton  # Run a triton server.
 TBD
 
 ## Artifacts
-- TritonServer with FasterTransformer: registry.gitlab.com/curt-park/tritonserver-ft
-- CodeGen-350M-mono-gptj: https://huggingface.co/curt-park/codegen-350M-mono-gptj/
+- TritonServer with FasterTransformer: https://gitlab.com/curt-park/tritonserver-ft
+- CodeGen-350M-mono-gptj: https://huggingface.co/curt-park/codegen-350M-mono-gptj
 
 ## For Developer
 ```bash
