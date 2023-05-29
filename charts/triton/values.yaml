@@ -32,6 +32,7 @@ image:
   imageName: registry.gitlab.com/curt-park/tritonserver-ft:22.12
   pullPolicy: IfNotPresent
   numGpus: 1
+  modelRepositoryPath: /models
   modelControlMode: poll # [none | explicit | poll]
 
 deployment:

@@ -42,6 +42,29 @@ If you want to configure loki as data sources to monitor the service logs:
 5. Explore -> Select Loki
 6. job -> default/client-codegen-client -> Show logs
 
+#### Triton Auto-Scaling
+You need to increase `maxReplicas` in `charts/triton/values.yaml`.
+```bash
+# For example,
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 2
+```
+By default, the autoscaling metic is average queuing time 50 ms for 30 seconds.
+You can set the target value as you need.
+```bash
+autoscaling:
+  ...
+  metrics:
+    - type: Pods
+      pods:
+        metric:
+          name: avg_time_queue_us
+        target:
+          type: AverageValue
+          averageValue: 50000  # 1,000 us == 1 ms
+```
+
 #### Finalization
 ```bash
 make remove-charts
@@ -175,6 +198,22 @@ nv_inference_compute_infer_duration_us{model="postprocessing",version="1"} 33846
 - The metric shows dynamic batching works (`nv_inference_count` vs `nv_inference_exec_count`)
 - Preprocessing spends 0.06% of the model inference time.
 - Postprocessing spends 0.06% of the model inference time.
+
+## NOTE
+#### NVIDIA-Docker Configurations for K8s
+Set `default-runtime` in `/etc/docker/daemon.json`.
+```bash
+{
+	"default-runtime": "nvidia",
+	"runtimes": {
+	  "nvidia": {
+	      "path": "/usr/bin/nvidia-container-runtime",
+	      "runtimeArgs": []
+	  }
+	}
+}
+```
+After configuring, restart docker: `sudo systemctl restart docker`
 
 ## References
 - https://github.com/NVIDIA/FasterTransformer

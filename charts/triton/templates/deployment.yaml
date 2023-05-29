@@ -81,6 +81,10 @@ spec:
               path: /v2/health/ready
               port: http
 
-      securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
+          volumeMounts:
+          - mountPath: /dev/shm
+            name: shmdir
+      volumes:
+        - name: shmdir
+          emptyDir:
+            medium: Memory
