@@ -94,7 +94,7 @@ make finalize
 
 ## Artifacts
 - TritonServer with FasterTransformer: https://gitlab.com/curt-park/tritonserver-ft
-- CodeGen-350M-mono-gptj: https://huggingface.co/curt-park/codegen-350M-mono-gptj
+- CodeGen-350M-mono-gptj (for Triton): https://huggingface.co/curt-park/codegen-350M-mono-gptj
 
 ## For Developer
 ```bash
@@ -102,6 +102,7 @@ make setup      # Install packages for execution.
 make setup-dev  # Install packages for development.
 make format     # Format the code.
 make lint       # Lint the code.
+make load-test  # Load test (`make setup-dev` is required).
 ```
 
 ## Experiments: Load Test
