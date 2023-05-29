@@ -33,6 +33,9 @@ remove-charts:
 	helm uninstall loki || true
 	helm uninstall traefik || true
 
+remove-all-containers:
+	docker rm -f $(shell docker ps -a -q)
+
 finalize:
 	sh /usr/local/bin/k3s-killall.sh
 	sh /usr/local/bin/k3s-uninstall.sh

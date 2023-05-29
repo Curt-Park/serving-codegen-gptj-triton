@@ -14,13 +14,34 @@ docker compose up   # Run the server & client.
 
 Open http://localhost:7860
 
-### Option2. Kubernetes
+### Option2. Kubernetes (K3S)
+
+Before you start,
 - Install [Helm](https://helm.sh/docs/intro/install/)
 
 #### Create a Service Cluster
 ```bash
 make cluster
 make charts
+```
+
+After a while, `kubectl get pods` will show:
+```bash
+NAME                                                     READY   STATUS    RESTARTS   AGE
+dcgm-exporter-ltftk                                      1/1     Running   0          2m26s
+prometheus-kube-prometheus-operator-7958587c67-wxh8c     1/1     Running   0          96s
+prometheus-prometheus-node-exporter-vgx65                1/1     Running   0          96s
+traefik-677c7d64f8-8zlh9                                 1/1     Running   0          115s
+prometheus-grafana-694f868865-58c2k                      3/3     Running   0          96s
+alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running   0          94s
+prometheus-kube-state-metrics-85c858f4b-8rkzv            1/1     Running   0          96s
+client-codegen-client-5d6df644f5-slcm8                   1/1     Running   0          87s
+prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running   0          94s
+client-codegen-client-5d6df644f5-tms9j                   1/1     Running   0          72s
+triton-57d47d448c-hkf57                                  1/1     Running   0          88s
+triton-prometheus-adapter-674d9855f-g9d6j                1/1     Running   0          88s
+loki-0                                                   1/1     Running   0          113s
+promtail-qzvrz                                           1/1     Running   0          112s
 ```
 
 #### Access to Client
