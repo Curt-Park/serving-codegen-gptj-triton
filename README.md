@@ -9,14 +9,44 @@ As for https://huggingface.co/moyix/codegen-350M-mono-gptj ,
 
 ### Option1. Docker
 ```bash
-make model          # Download a model repository for triton.
 docker compose up   # Run the server & client.
 ```
 
-Open http://localhost:7860/
+Open http://localhost:7860
 
 ### Option2. Kubernetes
-TBD
+- Install [Helm](https://helm.sh/docs/intro/install/)
+
+#### Create a Service Cluster
+```bash
+make cluster
+make charts
+```
+
+#### Access to Client
+Open http://localhost:7860
+
+#### Access to Grafana
+```bash
+kubectl port-forward svc/prometheus-grafana 3000:80
+```
+Open http://localhost:3000
+- id: admin
+- pw: prom-operator
+
+If you want to configure loki as data sources to monitor the service logs:
+1. Configuration -> Data sources -> Add data sources
+2. Select Loki
+3. Add URL: http://loki.default.svc.cluster.local:3100
+4. Click Save & test on the bottom.
+5. Explore -> Select Loki
+6. job -> default/client-codegen-client -> Show logs
+
+#### Finalization
+```bash
+make remove-charts
+make finalize
+```
 
 ## Artifacts
 - TritonServer with FasterTransformer: https://gitlab.com/curt-park/tritonserver-ft

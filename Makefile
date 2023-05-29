@@ -4,7 +4,36 @@ CONTAINER_NAME=registry.gitlab.com/curt-park/serving-codegen-triton:latest
 TRITON_CONTAINER_NAME=registry.gitlab.com/curt-park/tritonserver-ft
 TRITON_VERSION=22.12
 
-# Prerequisites
+# Cluster
+cluster:
+	curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="v1.27.2+k3s1" K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="server --disable=traefik" sh -s - --docker
+	mkdir -p ~/.kube
+	cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+	kubectl apply -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/master/nvidia-device-plugin.yml
+	helm repo add traefik https://helm.traefik.io/traefik
+	helm repo add grafana https://grafana.github.io/helm-charts
+	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+	helm repo update
+
+.PHONY: charts
+charts:
+	helm install traefik charts/traefik
+	helm install loki charts/loki
+	helm install promtail charts/promtail
+	helm install prometheus charts/prometheus
+	helm install dcgm-exporter charts/dcgm-exporter
+
+remove-charts:
+	helm uninstall prometheus || true
+	helm uninstall promtail || true
+	helm uninstall loki || true
+	helm uninstall traefik || true
+
+finalize:
+	sh /usr/local/bin/k3s-killall.sh
+	sh /usr/local/bin/k3s-uninstall.sh
+
+# Prerequisites for local execution
 env:
 	conda create -n $(BASENAME)  python=$(PYTHON) -y
 

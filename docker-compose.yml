@@ -16,8 +16,6 @@ services:
     container_name: codegen-server
     command: tritonserver --model-repository=/models
     shm_size: 4gb
-    volumes:
-      - ./codegen-350M-mono-gptj/model_repository:/models
     deploy:
       resources:
         reservations:
