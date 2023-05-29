@@ -24,7 +24,8 @@ pytest-cov      == 3.0.0        # coverage reports
 requests == 2.29.0
 
 # ltest
-locust          == 2.15.1
+tritonclient[http]  == 2.9.0
+locust              == 2.15.1
 
 # line-profile
 line-profiler   == 4.0.3

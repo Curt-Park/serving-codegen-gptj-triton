@@ -7,16 +7,15 @@ As for https://huggingface.co/moyix/codegen-350M-mono-gptj ,
 
 ## How to Run
 
-### Client
-TBD
-
-### Server: Docker (Option 1)
+### Option1. Docker
 ```bash
-make model   # Download a model repository for triton.
-make triton  # Run a triton server.
+make model          # Download a model repository for triton.
+docker compose up   # Run the server & client.
 ```
 
-### Server: Kubernetes (Option 2)
+Open http://localhost:7860/
+
+### Option2. Kubernetes
 TBD
 
 ## Artifacts

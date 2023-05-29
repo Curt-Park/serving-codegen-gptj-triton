@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  codegen-client:
+    image: registry.gitlab.com/curt-park/serving-codegen-triton:latest
+    container_name: codegen-client
+    environment:
+      - TRITON_SERVER_URL=codegen-server:8001
+      - GRADIO_SERVER_NAME=0.0.0.0
+    ports:
+      - 7860:7860
+    # restart: always
+
+  codegen-server:
+    image: registry.gitlab.com/curt-park/tritonserver-ft:22.12
+    container_name: codegen-server
+    command: tritonserver --model-repository=/models
+    shm_size: 4gb
+    volumes:
+      - ./codegen-350M-mono-gptj/model_repository:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # restart: always
