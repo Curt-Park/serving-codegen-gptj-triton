@@ -1,5 +1,7 @@
 # Serving codegen-350M-mono-gptj with Triton
 
+![](assets/codegen.gif)
+
 ## Requirements
 As for https://huggingface.co/moyix/codegen-350M-mono-gptj ,
 - Set up the client
