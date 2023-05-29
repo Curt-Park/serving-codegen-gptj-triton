@@ -4,27 +4,29 @@
 - Email: www.jwpark.co.kr@gmail.com
 """
 import os
+
 import gradio as gr
 import numpy as np
-import tritonclient.http as httpclient
+import tritonclient.grpc as grpcclient
 from tritonclient.utils import np_to_triton_dtype
 
 example = [
     ["def print_hello_world():", 8, 0.6, 42],
-    ["def get_file_size(filepath):", 27, 0.6, 42],
-    ["def count_lines(filename):", 35, 0.6, 42],
-    ["def count_words(filename):", 42, 0.6, 42],
-    ["def two_sum(nums, target):", 140, 0.6, 55],
+    ["def get_file_size(filepath):", 33, 0.6, 42],
+    ["def count_lines(filename):", 58, 0.6, 42],
+    ["def count_words(filename):", 95, 0.6, 42],
+    ["def two_sum(nums, target):", 155, 0.6, 55],
+    ["Solve the two sum problem with hash map.", 130, 0.6, 45]
 ]
 
 
-URL = os.getenv("TRITON_SERVER_URL", "localhost:8000")
-tritonclient = httpclient.InferenceServerClient(URL, concurrency=1)
+URL = os.getenv("TRITON_SERVER_URL", "localhost:8001")
+tritonclient = grpcclient.InferenceServerClient(URL)
 
 
-def prepare_tensor(name: str, tensor: np.ndarray) -> httpclient.InferInput:
+def prepare_tensor(name: str, tensor: np.ndarray) -> grpcclient.InferInput:
     """Create a triton input."""
-    infer_input = httpclient.InferInput(
+    infer_input = grpcclient.InferInput(
         name, tensor.shape, np_to_triton_dtype(tensor.dtype)
     )
     infer_input.set_data_from_numpy(tensor)
@@ -76,7 +78,7 @@ def code_generation(
         output0 = result.as_numpy("OUTPUT_0")
     except Exception as exception:
         print(exception)
-    return output0[0].decode("utf-8").replace("<|endoftext|>", "\t")
+    return output0[0].decode("utf-8")
 
 
 gr.Interface(
