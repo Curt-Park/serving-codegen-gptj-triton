@@ -64,14 +64,14 @@ If you want to configure loki as data sources to monitor the service logs:
 6. job -> default/client-codegen-client -> Show logs
 
 #### Triton Auto-Scaling
-You need to increase `maxReplicas` in `charts/triton/values.yaml`.
+To enable auto-scaling, you need to increase `maxReplicas` in `charts/triton/values.yaml`.
 ```bash
 # For example,
 autoscaling:
   minReplicas: 1
   maxReplicas: 2
 ```
-By default, the autoscaling metic is average queuing time 50 ms for 30 seconds.
+By default, the autoscaling metric is average queuing time 50 ms for 30 seconds.
 You can set the target value as you need.
 ```bash
 autoscaling:
