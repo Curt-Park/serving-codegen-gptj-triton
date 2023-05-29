@@ -37,3 +37,6 @@ format:
 
 lint:
 	PYTHONPATH=src pytest src --flake8 --pylint --mypy
+
+load-test:
+	PYTHONPATH=src locust -f $(PWD)/test/load_test/locustfile.py APIUser
