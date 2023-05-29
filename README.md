@@ -45,8 +45,8 @@ Experimental Setups:
 - Output Length: 8 vs 32 vs 128 vs 512
 
 ### Output Length: 8
-![](assets/loadtest_output_len_08_00)
-![](assets/loadtest_output_len_08_01)
+![](assets/loadtest_output_len_08_00.png)
+![](assets/loadtest_output_len_08_01.png)
 ```bash
 # metrics
 nv_inference_count{model="ensemble",version="1"} 391768
@@ -72,8 +72,8 @@ nv_inference_compute_infer_duration_us{model="preprocessing",version="1"} 168281
 - Postprocessing spends 0.83% of the model inference time.
 
 ### Output Length: 32
-![](assets/loadtest_output_len_32_00)
-![](assets/loadtest_output_len_32_01)
+![](assets/loadtest_output_len_32_00.png)
+![](assets/loadtest_output_len_32_01.png)
 ```bash
 # metrics
 nv_inference_count{model="ensemble",version="1"} 118812
@@ -98,8 +98,8 @@ nv_inference_compute_infer_duration_us{model="preprocessing",version="1"} 540735
 - Postprocessing spends 0.26% of the model inference time.
 
 ### Output Length: 128
-![](assets/loadtest_output_len_128_00)
-![](assets/loadtest_output_len_128_01)
+![](assets/loadtest_output_len_128_00.png)
+![](assets/loadtest_output_len_128_01.png)
 ```bash
 nv_inference_count{model="ensemble",version="1"} 14286
 nv_inference_count{model="codegen-350M-mono-gptj",version="1"} 14286
@@ -123,8 +123,8 @@ nv_inference_compute_infer_duration_us{model="postprocessing",version="1"} 36051
 - Postprocessing spends 0.08% of the model inference time.
 
 ### Output Length: 512
-![](assets/loadtest_output_len_512_00)
-![](assets/loadtest_output_len_512_01)
+![](assets/loadtest_output_len_512_00.png)
+![](assets/loadtest_output_len_512_01.png)
 ```bash
 nv_inference_count{model="ensemble",version="1"} 7183
 nv_inference_count{model="codegen-350M-mono-gptj",version="1"} 7183

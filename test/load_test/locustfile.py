@@ -47,7 +47,7 @@ class APIUser(FastHttpUser):
         """Prepare triton inputs."""
         input0 = [["def helloworld():"]]
         input0_data = np.array(input0).astype(object)
-        output0_len = 1024 * np.ones_like(input0).astype(np.uint32)
+        output0_len = 128 * np.ones_like(input0).astype(np.uint32)
         bad_words_list = np.array([[""]], dtype=object)
         stop_words_list = np.array([[""]], dtype=object)
         runtime_top_k = 3 * np.ones([1, 1]).astype(np.uint32)
