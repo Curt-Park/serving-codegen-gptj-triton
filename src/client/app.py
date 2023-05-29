@@ -11,12 +11,23 @@ import tritonclient.grpc as grpcclient
 from tritonclient.utils import np_to_triton_dtype
 
 example = [
-    ["def print_hello_world():", 8, 0.6, 42],
-    ["def get_file_size(filepath):", 33, 0.6, 42],
-    ["def count_lines(filename):", 58, 0.6, 42],
-    ["def count_words(filename):", 95, 0.6, 42],
-    ["def two_sum(nums, target):", 155, 0.6, 55],
-    ["Solve the two sum problem with hash map.", 130, 0.6, 45]
+    ["def print_hello_world():", 1024, 3, 0.92, 0.5, 1.0, -1, 5, 42, 1],
+    ["def get_file_size(filepath):", 1024, 3, 0.92, 0.5, 1.0, -1, 1, 42, 1],
+    ["def count_lines(filename):", 1024, 3, 0.92, 0.5, 1.0, -1, 1.16, 42, 1],
+    ["def count_words(filename):", 1024, 3, 0.92, 0.5, 0.3, -1, 1, 42, 1],
+    ["def two_sum(nums, target):", 1024, 3, 0.92, 0.5, 1.0, -1, 1, 60, 1],
+    [
+        "Solve the two sum problem with hash map.",
+        1024,
+        3,
+        0.92,
+        0.5,
+        0.1,
+        -1,
+        1,
+        205,
+        1,
+    ],
 ]
 
 
@@ -35,7 +46,16 @@ def prepare_tensor(name: str, tensor: np.ndarray) -> grpcclient.InferInput:
 
 # pylint: disable=too-many-locals,broad-except
 def code_generation(
-    gen_prompt: str, max_tokens: int, temp: float = 0.6, seed: int = 42
+    gen_prompt: str,
+    max_tokens: int,
+    top_k: int,
+    top_p: float,
+    diversity: float,
+    temp: float,
+    len_penalty_: float,
+    rep_penalty: float,
+    seed: int,
+    beams: int,
 ) -> str:
     """Generate code."""
     input0 = [[gen_prompt]]
@@ -43,17 +63,17 @@ def code_generation(
     output0_len = np.ones_like(input0).astype(np.uint32) * max_tokens
     bad_words_list = np.array([[""]], dtype=object)
     stop_words_list = np.array([[""]], dtype=object)
-    runtime_top_k = np.ones([input0_data.shape[0], 1]).astype(np.uint32)
-    runtime_top_p = np.zeros([input0_data.shape[0], 1]).astype(np.float32)
-    beam_search_diversity_rate = np.zeros([input0_data.shape[0], 1]).astype(np.float32)
-    temperature = temp * np.ones([input0_data.shape[0], 1]).astype(np.float32)
-    len_penalty = 1.0 * np.ones([input0_data.shape[0], 1]).astype(np.float32)
-    repetition_penalty = 1.0 * np.ones([input0_data.shape[0], 1]).astype(np.float32)
-    random_seed = seed * np.ones([input0_data.shape[0], 1]).astype(np.uint64)
-    is_return_log_probs = np.ones([input0_data.shape[0], 1]).astype(bool)
-    beam_width = np.ones([input0_data.shape[0], 1]).astype(np.uint32)
-    start_ids = 220 * np.ones([input0_data.shape[0], 1]).astype(np.uint32)
-    end_ids = 50256 * np.ones([input0_data.shape[0], 1]).astype(np.uint32)
+    runtime_top_k = top_k * np.ones([1, 1]).astype(np.uint32)
+    runtime_top_p = top_p * np.ones([1, 1]).astype(np.float32)
+    temperature = temp * np.ones([1, 1]).astype(np.float32)
+    len_penalty = len_penalty_ * np.ones([1, 1]).astype(np.float32)
+    repetition_penalty = rep_penalty * np.ones([1, 1]).astype(np.float32)
+    random_seed = seed * np.ones([1, 1]).astype(np.uint64)
+    is_return_log_probs = np.ones([1, 1]).astype(bool)
+    beam_width = beams * np.ones([1, 1]).astype(np.uint32)
+    beam_diversity = diversity * np.ones([1, 1]).astype(np.float32)
+    start_ids = 220 * np.ones([1, 1]).astype(np.uint32)
+    end_ids = 50256 * np.ones([1, 1]).astype(np.uint32)
 
     inputs = [
         prepare_tensor("INPUT_0", input0_data),
@@ -62,13 +82,13 @@ def code_generation(
         prepare_tensor("INPUT_3", stop_words_list),
         prepare_tensor("runtime_top_k", runtime_top_k),
         prepare_tensor("runtime_top_p", runtime_top_p),
-        prepare_tensor("beam_search_diversity_rate", beam_search_diversity_rate),
         prepare_tensor("temperature", temperature),
         prepare_tensor("len_penalty", len_penalty),
         prepare_tensor("repetition_penalty", repetition_penalty),
         prepare_tensor("random_seed", random_seed),
         prepare_tensor("is_return_log_probs", is_return_log_probs),
         prepare_tensor("beam_width", beam_width),
+        prepare_tensor("beam_search_diversity_rate", beam_diversity),
         prepare_tensor("start_id", start_ids),
         prepare_tensor("end_id", end_ids),
     ]
@@ -78,7 +98,10 @@ def code_generation(
         output0 = result.as_numpy("OUTPUT_0")
     except Exception as exception:
         print(exception)
-    return output0[0].decode("utf-8")
+
+    resp = output0[0].decode("utf-8")
+    idx = resp.find("<|endoftext|>")
+    return resp[:idx]
 
 
 gr.Interface(
@@ -87,10 +110,31 @@ gr.Interface(
         gr.Code(lines=10, label="Input code"),
         gr.Slider(
             minimum=8,
-            maximum=1000,
+            maximum=1024,
             step=1,
-            value=8,
+            value=1024,
             label="Number of tokens to generate",
+        ),
+        gr.Slider(
+            minimum=1,
+            maximum=100,
+            step=1,
+            value=5,
+            label="Top K",
+        ),
+        gr.Slider(
+            minimum=0,
+            maximum=1,
+            step=0.01,
+            value=0.92,
+            label="Top P",
+        ),
+        gr.Slider(
+            minimum=0,
+            maximum=1,
+            step=0.01,
+            value=0.5,
+            label="Beam Search Diversity",
         ),
         gr.Slider(
             minimum=0,
@@ -100,11 +144,32 @@ gr.Interface(
             label="Temperature",
         ),
         gr.Slider(
+            minimum=-1,
+            maximum=1,
+            step=0.01,
+            value=0.0,
+            label="Length Penalty",
+        ),
+        gr.Slider(
+            minimum=0,
+            maximum=5,
+            step=0.01,
+            value=1.0,
+            label="Repetition Penalty",
+        ),
+        gr.Slider(
             minimum=0,
             maximum=1000,
             step=1,
             value=42,
             label="Random seed to use for the generation",
+        ),
+        gr.Slider(
+            minimum=1,
+            maximum=100,
+            step=1,
+            value=1,
+            label="Beams",
         ),
     ],
     outputs=gr.Code(label="Predicted code", lines=10),
