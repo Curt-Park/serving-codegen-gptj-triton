@@ -1,7 +1,7 @@
 PYTHON=3.9
 BASENAME=serving-codegen-triton
-CONTAINER_NAME=registry.gitlab.com/curt-park/serving-codegen-triton:latest
-TRITON_CONTAINER_NAME=registry.gitlab.com/curt-park/tritonserver-ft
+CONTAINER_NAME=ghcr.io/curt-park/serving-codegen-gptj-triton
+FT_BACKEND_VERSION=release/v1.4_tag
 TRITON_VERSION=22.12
 
 # Cluster
@@ -57,24 +57,38 @@ client:
 model:
 	git clone https://huggingface.co/curt-park/codegen-350M-mono-gptj
 
-triton:
-	docker run --gpus "device=0" --shm-size=4G --rm \
-		-p 8000:8000 -p 8001:8001 -p 8002:8002  -v $(PWD)/codegen-350M-mono-gptj/model_repository:/models \
-		$(TRITON_CONTAINER_NAME):$(TRITON_VERSION) tritonserver --model-repository=/models
-
 
 # Docker
 docker-build:
-	docker build -t $(CONTAINER_NAME) .
+	docker build -t $(CONTAINER_NAME):latest .
 
 docker-pull:
-	docker pull $(CONTAINER_NAME)
+	docker pull $(CONTAINER_NAME):latest
 
 docker-push:
-	docker push $(CONTAINER_NAME)
+	docker push $(CONTAINER_NAME):latest
 
 docker-run:
-	docker run -it --rm -p 7860:7860 -e GRADIO_SERVER_NAME=0.0.0.0 -e TRITON_SERVER_URL=$(TRITON_SERVER_URL) $(CONTAINER_NAME)
+	docker run -it --rm -p 7860:7860 -e GRADIO_SERVER_NAME=0.0.0.0 \
+		-e TRITON_SERVER_URL=$(TRITON_SERVER_URL) $(CONTAINER_NAME):latest
+
+docker-triton-build:
+	git clone https://github.com/triton-inference-server/fastertransformer_backend.git
+	cd fastertransformer_backend && \
+		git fetch origin $(FT_BACKEND_VERSION)  && \
+		git checkout $(FT_BACKEND_VERSION) && \
+		cp docker/Dockerfile . && \
+		docker build -t $(CONTAINER_NAME):server-$(TRITON_VERSION) .
+	rm -rf fastertransformer_backend
+
+docker-triton-push:
+	docker push $(CONTAINER_NAME):server-$(TRITON_VERSION)
+
+docker-triton-run:
+	docker run --gpus "device=0" --shm-size=4G --rm \
+		-p 8000:8000 -p 8001:8001 -p 8002:8002  \
+		$(CONTAINER_NAME):server-$(TRITON_VERSION) \
+		tritonserver --model-repository=/models
 
 
 # Dev

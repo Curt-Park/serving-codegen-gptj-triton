@@ -8,7 +8,7 @@ fullnameOverride: ""
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/curt-park/serving-codegen-triton
+  repository: ghcr.io/curt-park/serving-codegen-gptj-triton
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest  # TODO: Add a specific version after setting CI/CD.

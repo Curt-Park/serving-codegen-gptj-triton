@@ -29,7 +29,7 @@ tags:
   loadBalancing: true
 
 image:
-  imageName: registry.gitlab.com/curt-park/tritonserver-ft:22.12
+  imageName: ghcr.io/curt-park/serving-codegen-gptj-triton:server-22.12
   pullPolicy: IfNotPresent
   numGpus: 1
   modelRepositoryPath: /models

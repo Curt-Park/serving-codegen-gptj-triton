@@ -95,7 +95,6 @@ make finalize
 ```
 
 ## Artifacts
-- TritonServer with FasterTransformer: https://gitlab.com/curt-park/tritonserver-ft
 - CodeGen-350M-mono-gptj (for Triton): https://huggingface.co/curt-park/codegen-350M-mono-gptj
 
 ## For Developer

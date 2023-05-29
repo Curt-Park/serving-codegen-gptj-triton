@@ -2,7 +2,7 @@ version: "3"
 
 services:
   codegen-client:
-    image: registry.gitlab.com/curt-park/serving-codegen-triton:latest
+    image: ghcr.io/curt-park/serving-codegen-gptj-triton:latest
     container_name: codegen-client
     environment:
       - TRITON_SERVER_URL=codegen-server:8001
@@ -12,7 +12,7 @@ services:
     # restart: always
 
   codegen-server:
-    image: registry.gitlab.com/curt-park/tritonserver-ft:22.12
+    image: ghcr.io/curt-park/serving-codegen-gptj-triton:server-22.12
     container_name: codegen-server
     command: tritonserver --model-repository=/models
     shm_size: 4gb
