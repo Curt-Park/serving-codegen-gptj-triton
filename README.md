@@ -1,4 +1,4 @@
-# Serving codegen-350M-mono-gptj on Triton
+# Serving codegen-350M-mono-gptj on Triton Inference Server
 
 ![](assets/codegen.png)
 
