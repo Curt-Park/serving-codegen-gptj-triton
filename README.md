@@ -3,7 +3,7 @@
 ![](assets/codegen.png)
 
 ## Contents
-- PyTorch model conversion to [FasterTransformer](https://github.com/NVIDIA/FasterTransformer).
+- PyTorch model conversion to [FasterTransformer](https://github.com/NVIDIA/FasterTransformer) (See [Artifacts](https://huggingface.co/curt-park/codegen-350M-mono-gptj)).
 - [Triton](https://github.com/triton-inference-server/server) serving with [FasterTransformer Backend](https://github.com/triton-inference-server/fastertransformer_backend).
 - A simple chatbot with [Gradio](https://github.com/gradio-app/gradio).
 - Docker compose for the server and client.
