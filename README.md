@@ -2,10 +2,14 @@
 
 ![](assets/codegen.png)
 
-## Requirements
-As for https://huggingface.co/moyix/codegen-350M-mono-gptj ,
-- Set up the client
-- Set up a server
+## Contents
+- PyTorch model conversion to [FasterTransformer](https://github.com/NVIDIA/FasterTransformer).
+- [Triton](https://github.com/triton-inference-server/server) serving with [FasterTransformer Backend](https://github.com/triton-inference-server/fastertransformer_backend).
+- A simple chatbot with [Gradio](https://github.com/gradio-app/gradio).
+- Docker compose for the server and client.
+- Kubernetes helm charts for the server and client.
+- Monitoring on K8s (Promtail + Loki & Prometheus & Grafana).
+- Autoscaling Triton (gRPC) on K8s (Triton Metrics & Traefik)
 
 ## How to Run
 
